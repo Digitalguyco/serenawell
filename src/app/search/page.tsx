@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
@@ -93,7 +93,7 @@ const allProducts = [
   }
 ];
 
-export default function Search() {
+function SearchResults() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
@@ -188,8 +188,29 @@ export default function Search() {
             </Link>
           </div>
         ) : null}
-        
       </div>
     </div>
+  );
+}
+
+// Loading fallback component
+function SearchLoading() {
+  return (
+    <div className="bg-herbal-cream min-h-screen py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10">
+          <h1 className="font-heading text-4xl md:text-5xl font-bold text-royal-leaf-green mb-6">Search Results</h1>
+          <p className="font-body text-deep-charcoal">Loading search results...</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Search() {
+  return (
+    <Suspense fallback={<SearchLoading />}>
+      <SearchResults />
+    </Suspense>
   );
 } 
